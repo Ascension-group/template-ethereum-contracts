@@ -1,11 +1,11 @@
-import 'dotenv/config';
-import '@nomicfoundation/hardhat-toolbox';
-import '@nomicfoundation/hardhat-foundry';
-import 'hardhat-deploy';
-import 'hardhat-tracer';
-import 'hardhat-interact';
-import {task} from 'hardhat/config';
-import {HardhatUserConfig, HDAccountsUserConfig, HttpNetworkUserConfig, NetworksUserConfig} from 'hardhat/types';
+import 'dotenv/config'
+import '@nomicfoundation/hardhat-toolbox'
+import '@nomicfoundation/hardhat-foundry'
+import 'hardhat-deploy'
+import 'hardhat-tracer'
+import 'hardhat-interact'
+import {task} from 'hardhat/config'
+import {HardhatUserConfig, HDAccountsUserConfig, HttpNetworkUserConfig, NetworksUserConfig} from 'hardhat/types'
 
 const config: HardhatUserConfig = {
     solidity: {
@@ -38,7 +38,9 @@ const config: HardhatUserConfig = {
         },
         localhost: {
             url: node_url('localhost'),
-            accounts: getAccount(),
+            accounts: {
+                mnemonic: 'test test test test test test test test test test test junk',
+            },
         },
         mainnet: {
             url: node_url('mainnet'),
@@ -115,67 +117,67 @@ const config: HardhatUserConfig = {
               },
           }
         : undefined,
-};
+}
 
-export default config;
+export default config
 
 task('seed', 'Prints a new wallet seed phrase', async (_, {ethers}) => {
-    const wallet = ethers.Wallet.createRandom();
-    console.log(`Public Address[0]: ${wallet.address}`);
-    console.log(`Mnemonic: ${wallet.mnemonic.phrase}`);
-    console.log(`Private Key[0]: ${wallet.privateKey}`);
-});
+    const wallet = ethers.Wallet.createRandom()
+    console.log(`Public Address[0]: ${wallet.address}`)
+    console.log(`Mnemonic: ${wallet.mnemonic.phrase}`)
+    console.log(`Private Key[0]: ${wallet.privateKey}`)
+})
 
 function getAccount(): string[] | {mnemonic: string} {
-    const privateKey = process.env.PRIVATE_KEY;
+    const privateKey = process.env.PRIVATE_KEY
     if (privateKey && privateKey !== '') {
-        return [`${privateKey}`];
+        return [`${privateKey}`]
     }
 
-    const mnemonic = process.env.MNEMONIC;
+    const mnemonic = process.env.MNEMONIC
     if (!mnemonic || mnemonic === '') {
         return {
             mnemonic: 'test test test test test test test test test test test junk',
-        };
+        }
     }
-    return {mnemonic: mnemonic};
+    return {mnemonic: mnemonic}
 }
 
 function node_url(networkName: string): string {
     if (networkName) {
-        const uri = process.env['NODE_URI_' + networkName.toUpperCase()];
+        const uri = process.env['NODE_URI_' + networkName.toUpperCase()]
         if (uri && uri !== '') {
-            return uri;
+            return uri
         }
     }
 
     if (networkName === 'localhost') {
         // do not use ETH_NODE_URI
-        return 'http://localhost:8545';
+        return 'http://localhost:8545'
     }
 
-    return '';
+    return ''
 }
 
 export function addForkConfiguration(networks: NetworksUserConfig): NetworksUserConfig {
     // While waiting for hardhat PR: https://github.com/nomiclabs/hardhat/pull/1542
     if (process.env.HARDHAT_FORK) {
-        process.env['HARDHAT_DEPLOY_FORK'] = process.env.HARDHAT_FORK;
+        process.env['HARDHAT_DEPLOY_FORK'] = process.env.HARDHAT_FORK
     }
 
-    const currentNetworkName = process.env.HARDHAT_FORK;
-    let forkURL: string | undefined = currentNetworkName && node_url(currentNetworkName);
-    let hardhatAccounts: HDAccountsUserConfig | undefined;
+    const currentNetworkName = process.env.HARDHAT_FORK
+    let forkURL: string | undefined = currentNetworkName && node_url(currentNetworkName)
+    let hardhatAccounts: HDAccountsUserConfig | undefined
     if (currentNetworkName && currentNetworkName !== 'hardhat') {
-        const currentNetwork = networks[currentNetworkName] as HttpNetworkUserConfig;
+        const currentNetwork = networks[currentNetworkName] as HttpNetworkUserConfig
         if (currentNetwork) {
-            forkURL = currentNetwork.url;
+            forkURL = currentNetwork.url
             if (
                 currentNetwork.accounts &&
                 typeof currentNetwork.accounts === 'object' &&
                 'mnemonic' in currentNetwork.accounts
             ) {
-                hardhatAccounts = currentNetwork.accounts;
+                hardhatAccounts = currentNetwork.accounts
             }
         }
     }
@@ -202,6 +204,6 @@ export function addForkConfiguration(networks: NetworksUserConfig): NetworksUser
                     : undefined,
             },
         },
-    };
-    return newNetworks;
+    }
+    return newNetworks
 }

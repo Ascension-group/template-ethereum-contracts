@@ -6,15 +6,11 @@ import {Contract} from "contracts/Contract.sol";
 import "lib/forge-std/src/Test.sol";
 
 contract TestContract is Test {
-  address deployer;
+    address deployer;
 
     function setUp() public {
         deployer = vm.addr(69);
         vm.startPrank(deployer);
         vm.deal(deployer, 1000 ether);
-   
     }
-
-
 }
-
